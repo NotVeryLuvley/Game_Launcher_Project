@@ -185,10 +185,10 @@ class MyFrame(wx.Frame):
         self.title_bar.Bind(wx.EVT_MOTION, self.on_drag_move)
 
         # Add the scrollable game panel below the title bar
-        panel = game_scrollable(self)
+        self.panel = game_scrollable(self)
         frame_sizer = wx.BoxSizer(wx.VERTICAL)
         frame_sizer.Add(self.title_bar, 0, wx.EXPAND)
-        frame_sizer.Add(panel, 1, wx.EXPAND)
+        frame_sizer.Add(self.panel, 1, wx.EXPAND)
 
         self.SetSizer(frame_sizer)
         self.Layout()
@@ -199,10 +199,15 @@ class MyFrame(wx.Frame):
         self.drag_pos = wx.Point(0, 0)
 
     # Handle game update
-    def on_update(self,event):
+    def on_update(self, event):
         delete_flag()
         download_games()
-        find_games(r"Games")
+        global games
+        games = find_games(r"Games")
+        self.panel.Destroy()
+        self.panel = game_scrollable(self)
+        self.GetSizer().Add(self.panel, 1, wx.EXPAND)
+        self.Layout()
 
     def on_close(self, event):
         self.Close()
